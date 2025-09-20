@@ -1,21 +1,20 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import AddVehicle from './components/AddVehicle';
-import SearchBook from './components/SearchBook';
-function App() {
+// src/App.js
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./components/Home";
+import AddVehicle from "./components/AddVehicle";
+import SearchBook from "./components/SearchBook";
+import Navbar from "./components/Navbar";
+
+
+export default function App() {
   return (
-    <Router>
-      <div className="p-6 max-w-4xl mx-auto">
-        <nav className="mb-6">
-          <Link to="/" className="mr-4 text-blue-600 hover:underline">Search & Book</Link>
-          <Link to="/add-vehicle" className="text-blue-600 hover:underline">Add Vehicle</Link>
-        </nav>
-        <Routes>
-          <Route path="/" element={<SearchBook />} />
-          <Route path="/add-vehicle" element={<AddVehicle />} />
-        </Routes>
-      </div>
-    </Router>
+    <BrowserRouter>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/add-vehicle" element={<AddVehicle />} />
+        <Route path="/search-book" element={<SearchBook />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
-export default App;

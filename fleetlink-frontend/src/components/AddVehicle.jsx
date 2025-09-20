@@ -1,88 +1,56 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { addVehicle } from "../features/VehiclesSlice";
 
-const AddVehicle = () => {
-  const [form, setForm] = useState({ name: '', capacityKg: '', tyres: '' });
-  const [message, setMessage] = useState(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
 
-  const handleChange = e => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+export default function AddVehicle() {
+  const dispatch = useDispatch();
+  const [form, setForm] = useState({ name: "", capacityKg: "", tyres: "" });
+  const [msg, setMsg] = useState("");
 
-  const handleSubmit = async e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setMessage(null);
-    setError(null);
-    setLoading(true);
-
-    try {
-      const payload = {
-        name: form.name,
-        capacityKg: Number(form.capacityKg),
-        tyres: Number(form.tyres)
-      };
-      const res = await axios.post('http://localhost:4000/api/vehicles', payload);
-      setMessage(`Vehicle added with ID: ${res.data._id}`);
-      setForm({ name: '', capacityKg: '', tyres: '' });
-    } catch (err) {
-      setError(err.response?.data?.error || 'Failed to add vehicle');
-    } finally {
-      setLoading(false);
-    }
+    debugger
+    dispatch(addVehicle(form))
+      .unwrap()
+      .then(() => setMsg("Vehicle added successfully"))
+      .catch(() => setMsg("Error adding vehicle"));
   };
 
   return (
-    <div>
-      <h2 className="text-2xl font-semibold mb-4">Add Vehicle</h2>
-      <form onSubmit={handleSubmit} className="space-y-4 max-w-md">
-        <div>
-          <label className="block mb-1 font-medium">Name:</label>
-          <input
-            name="name"
-            value={form.name}
-            onChange={handleChange}
-            required
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
-        </div>
-        <div>
-          <label className="block mb-1 font-medium">Capacity (Kg):</label>
-          <input
-            name="capacityKg"
-            type="number"
-            value={form.capacityKg}
-            onChange={handleChange}
-            required
-            min="1"
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
-        </div>
-        <div>
-          <label className="block mb-1 font-medium">Tyres:</label>
-          <input
-            name="tyres"
-            type="number"
-            value={form.tyres}
-            onChange={handleChange}
-            required
-            min="1"
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
-        </div>
-        <button
-          type="submit"
-          disabled={loading}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-        >
-          {loading ? 'Adding...' : 'Add Vehicle'}
+    <div className="p-6 max-w-md mx-auto">
+      <h2 className="text-xl font-bold mb-4">Add Vehicle</h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <input
+          type="text"
+          placeholder="Name"
+          className="w-full p-2 border rounded"
+          value={form.name}
+          onChange={(e) => setForm({ ...form, name: e.target.value })}
+          required
+        />
+        <input
+          type="number"
+          placeholder="Capacity (kg)"
+          className="w-full p-2 border rounded"
+          value={form.capacityKg}
+          onChange={(e) => setForm({ ...form, capacityKg: e.target.value })}
+          required
+        />
+        <input
+          type="number"
+          placeholder="Tyres"
+          className="w-full p-2 border rounded"
+          value={form.tyres}
+          onChange={(e) => setForm({ ...form, tyres: e.target.value })}
+          required
+        />
+        <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+          Add Vehicle
         </button>
       </form>
-      {message && <p className="mt-4 text-green-600">{message}</p>}
-      {error && <p className="mt-4 text-red-600">{error}</p>}
+      {msg && <p className="mt-4">{msg}</p>}
     </div>
   );
-};
+}
 
-export default AddVehicle;
